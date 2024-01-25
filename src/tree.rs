@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+
 enum Element<T: PartialEq + PartialOrd + Display> {
     Node(T, Box<Element<T>>, Box<Element<T>>),
     End,
@@ -9,31 +10,28 @@ pub struct BinaryTree<T: PartialEq + PartialOrd + Display> {
     start: Element<T>,
 }
 
-trait TreeOrdPrinter {
-    fn print_pre_order();
-    fn print_in_order();
-    fn print_post_order();
-}
-
 
 
 impl<T: PartialEq + PartialOrd + Display> BinaryTree<T> {
-
-    pub fn new() -> Self
-    {
-        return BinaryTree {
-            start: Element::End,
-        }
+    pub fn new() -> Self { 
+        return BinaryTree { start: Element::End } 
     }
+}
 
-    
-    
+impl<T: PartialEq + PartialOrd + Display> Element<T> {
+    fn from(t: T) -> Self { 
+        Element::Node(t, Box::from(Element::End), Box::from(Element::End)) 
+    }
+}
+
+
+impl<T: PartialEq + PartialOrd + Display> BinaryTree<T> {
     pub fn contains(&self, t: T) -> bool {
         return self.start.contains(t);
     }
 
     pub fn insert(&mut self, t: T) {
-        if let Element::Node(_, _, _) = self.start {
+        if let Element::Node(..) = self.start {
             self.start.insert(t);
         } else {
             self.start = Element::from(t);
@@ -42,12 +40,6 @@ impl<T: PartialEq + PartialOrd + Display> BinaryTree<T> {
 }
 
 impl<T: PartialEq + PartialOrd + Display> Element<T> {
-
-    
-
-    fn from(t: T) -> Self {
-        return Element::Node(t, Box::from(Element::End), Box::from(Element::End));
-    }
 
     fn contains(&self, t: T) -> bool {
         match self {
@@ -68,24 +60,29 @@ impl<T: PartialEq + PartialOrd + Display> Element<T> {
         match self {
             Element::Node(data, left, right) => {
                 if t < *data {
-                    if let Element::Node(_, _, _) = **left {
+                    if let Element::Node(..) = **left {
                         left.insert(t);
                     } else {
                         *left = Box::from(Element::from(t));
                     }
                 } else if t > *data {
-                    if let Element::Node(_, _, _) = **right {
+                    if let Element::Node(..) = **right {
                         right.insert(t);
                     } else {
                         *right = Box::from(Element::from(t));
                     }
                 }
             },
-            Element::End => {println!("This should never be printed!");}
+            _ => {println!("This should never be printed!");}
         }
     }
+
 }
 
+
+/*
+ *  The following implementations definde printing functions
+ */
 
 impl<T: PartialEq + PartialOrd + Display> BinaryTree<T> {
     pub fn print_pre_order(&self) {
