@@ -1,0 +1,147 @@
+use std::fmt::Display;
+
+enum Element<T: PartialEq + PartialOrd + Display> {
+    Node(T, Box<Element<T>>, Box<Element<T>>),
+    End,
+}
+
+pub struct BinaryTree<T: PartialEq + PartialOrd + Display> {
+    start: Element<T>,
+}
+
+trait TreeOrdPrinter {
+    fn print_pre_order();
+    fn print_in_order();
+    fn print_post_order();
+}
+
+
+
+impl<T: PartialEq + PartialOrd + Display> BinaryTree<T> {
+
+    pub fn new() -> Self
+    {
+        return BinaryTree {
+            start: Element::End,
+        }
+    }
+
+    
+    
+    pub fn contains(&self, t: T) -> bool {
+        return self.start.contains(t);
+    }
+
+    pub fn insert(&mut self, t: T) {
+        if let Element::Node(_, _, _) = self.start {
+            self.start.insert(t);
+        } else {
+            self.start = Element::from(t);
+        }
+    }
+}
+
+impl<T: PartialEq + PartialOrd + Display> Element<T> {
+
+    
+
+    fn from(t: T) -> Self {
+        return Element::Node(t, Box::from(Element::End), Box::from(Element::End));
+    }
+
+    fn contains(&self, t: T) -> bool {
+        match self {
+            Element::Node(data, left, right) => {
+                return if *data == t {
+                    true
+                } else if t < *data {
+                    left.contains(t)
+                } else {
+                    right.contains(t)
+                }
+            },
+            Element::End => false
+        }        
+    }
+
+    fn insert(&mut self, t: T) {
+        match self {
+            Element::Node(data, left, right) => {
+                if t < *data {
+                    if let Element::Node(_, _, _) = **left {
+                        left.insert(t);
+                    } else {
+                        *left = Box::from(Element::from(t));
+                    }
+                } else if t > *data {
+                    if let Element::Node(_, _, _) = **right {
+                        right.insert(t);
+                    } else {
+                        *right = Box::from(Element::from(t));
+                    }
+                }
+            },
+            Element::End => {println!("This should never be printed!");}
+        }
+    }
+}
+
+
+impl<T: PartialEq + PartialOrd + Display> BinaryTree<T> {
+    pub fn print_pre_order(&self) {
+        println!("Tree in PreOrder:");
+        self.start.print_pre_order(0);
+    }
+
+    pub fn print_in_order(&self) {
+        println!("Tree in Order:");
+        self.start.print_in_order();
+    }
+
+    pub fn print_post_order(&self) {
+        println!("Tree in PostOrder:");
+        self.start.print_post_order(0);
+    }
+
+}
+impl<T: PartialEq + PartialOrd + Display> Element<T> {
+    fn print_pre_order(&self, depth: u32) {
+        match self {
+            Element::Node(data, left, right) => {
+                for _ in 0..depth {
+                    print!("  ");
+                }
+                println!("{}", data);
+                left.print_pre_order(depth+1);
+                right.print_pre_order(depth+1);
+            } 
+            _ => {}
+        }
+    }
+
+    fn print_in_order(&self) {
+        match self {
+            Element::Node(data, left, right) => {
+                
+                left.print_in_order();
+                println!("{}", data);
+                right.print_in_order();
+            } 
+            _ => {}
+        }
+    }
+
+    fn print_post_order(&self, depth: u32) {
+        match self {
+            Element::Node(data, left, right) => {
+                left.print_post_order(depth+1);
+                right.print_post_order(depth+1);
+                for _ in 0..depth {
+                    print!("  ");
+                }
+                println!("{}", data);
+            } 
+            _ => {}
+        }
+    }
+}
