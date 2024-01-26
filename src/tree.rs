@@ -1,31 +1,31 @@
 use std::fmt::Display;
 
 
-enum Element<T: PartialEq + PartialOrd + Display> {
+enum Element<T: PartialOrd + Display> {
     Node(T, Box<Element<T>>, Box<Element<T>>),
     End,
 }
 
-pub struct BinaryTree<T: PartialEq + PartialOrd + Display> {
+pub struct BinaryTree<T: PartialOrd + Display> {
     start: Element<T>,
 }
 
 
 
-impl<T: PartialEq + PartialOrd + Display> BinaryTree<T> {
+impl<T: PartialOrd + Display> BinaryTree<T> {
     pub fn new() -> Self { 
         return BinaryTree { start: Element::End } 
     }
 }
 
-impl<T: PartialEq + PartialOrd + Display> Element<T> {
+impl<T: PartialOrd + Display> Element<T> {
     fn from(t: T) -> Self { 
         Element::Node(t, Box::from(Element::End), Box::from(Element::End)) 
     }
 }
 
 
-impl<T: PartialEq + PartialOrd + Display> BinaryTree<T> {
+impl<T: PartialOrd + Display> BinaryTree<T> {
     pub fn contains(&self, t: T) -> bool {
         return self.start.contains(t);
     }
@@ -39,7 +39,7 @@ impl<T: PartialEq + PartialOrd + Display> BinaryTree<T> {
     }
 }
 
-impl<T: PartialEq + PartialOrd + Display> Element<T> {
+impl<T: PartialOrd + Display> Element<T> {
 
     fn contains(&self, t: T) -> bool {
         match self {
@@ -84,7 +84,7 @@ impl<T: PartialEq + PartialOrd + Display> Element<T> {
  *  The following implementations definde printing functions
  */
 
-impl<T: PartialEq + PartialOrd + Display> BinaryTree<T> {
+impl<T: PartialOrd + Display> BinaryTree<T> {
     pub fn print_pre_order(&self) {
         println!("Tree in PreOrder:");
         self.start.print_pre_order(0);
@@ -101,7 +101,7 @@ impl<T: PartialEq + PartialOrd + Display> BinaryTree<T> {
     }
 
 }
-impl<T: PartialEq + PartialOrd + Display> Element<T> {
+impl<T: PartialOrd + Display> Element<T> {
     fn print_pre_order(&self, depth: u32) {
         match self {
             Element::Node(data, left, right) => {
